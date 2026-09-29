@@ -1,96 +1,317 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letter Animation</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinematic Name</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #0b0b16;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
+    body {
+        height: 100vh;
+        overflow: hidden;
+        background: #000;
+        font-family: Arial, Helvetica, sans-serif;
+    }
 
-        #name {
-            display: flex;
-            gap: 8px;
-            font-size: clamp(40px, 10vw, 100px);
-            font-weight: bold;
-            color: #fff;
-        }
+    /* Cinematic background */
+    .scene {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
 
-        .letter {
-            opacity: 0;
-            transform: translateY(50px) scale(0.5);
-            display: inline-block;
-
-            background: linear-gradient(
-                90deg,
-                #00ffff,
-                #7b2cff,
-                #ff00cc
+        background:
+            radial-gradient(
+                circle at center,
+                #171717 0%,
+                #080808 40%,
+                #000 75%
             );
+    }
 
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+    /* Moving light */
+    .light {
+        position: absolute;
+        width: 70vw;
+        height: 70vw;
+        max-width: 900px;
+        max-height: 900px;
 
-            animation: appear 0.7s ease forwards;
+        background: radial-gradient(
+            circle,
+            rgba(255, 210, 120, .13),
+            transparent 65%
+        );
+
+        filter: blur(20px);
+        animation: lightMove 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes lightMove {
+        from {
+            transform: translate(-15%, -5%);
         }
 
-        @keyframes appear {
-            0% {
-                opacity: 0;
-                transform: translateY(50px) scale(0.5);
-            }
-
-            60% {
-                opacity: 1;
-                transform: translateY(-10px) scale(1.1);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+        to {
+            transform: translate(15%, 5%);
         }
-    </style>
+    }
+
+    /* Name */
+    .name {
+        position: relative;
+        z-index: 5;
+
+        display: flex;
+        justify-content: center;
+
+        font-size: clamp(45px, 11vw, 140px);
+        font-weight: 900;
+        letter-spacing: clamp(3px, 1vw, 15px);
+
+        color: #fff;
+
+        transform: scale(1.05);
+        animation: cameraZoom 6s ease-out forwards;
+    }
+
+    @keyframes cameraZoom {
+        from {
+            transform: scale(1.12);
+        }
+
+        to {
+            transform: scale(1);
+        }
+    }
+
+    /* Individual letters */
+    .letter {
+        position: relative;
+        display: inline-block;
+
+        opacity: 0;
+        filter: blur(15px);
+
+        transform:
+            translateY(50px)
+            scale(1.3);
+
+        text-shadow:
+            0 0 10px rgba(255,255,255,.4),
+            0 0 35px rgba(255,190,90,.3);
+
+        animation:
+            cinematicIn 1.2s
+            cubic-bezier(.16,1,.3,1)
+            forwards;
+    }
+
+    @keyframes cinematicIn {
+        0% {
+            opacity: 0;
+            filter: blur(18px);
+            transform:
+                translateY(60px)
+                scale(1.35);
+        }
+
+        55% {
+            opacity: 1;
+            filter: blur(0);
+            transform:
+                translateY(-5px)
+                scale(1.02);
+        }
+
+        100% {
+            opacity: 1;
+            filter: blur(0);
+            transform:
+                translateY(0)
+                scale(1);
+        }
+    }
+
+    /* Light sweep */
+    .name::after {
+        content: "";
+        position: absolute;
+        top: -20%;
+        left: -30%;
+
+        width: 20%;
+        height: 140%;
+
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.8),
+            transparent
+        );
+
+        transform: skewX(-20deg);
+        filter: blur(8px);
+
+        animation: sweep 3s 2s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes sweep {
+        0% {
+            left: -30%;
+            opacity: 0;
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        100% {
+            left: 120%;
+            opacity: 0;
+        }
+    }
+
+    /* Film grain */
+    .grain {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+
+        pointer-events: none;
+
+        opacity: .08;
+
+        background-image:
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+
+        animation: grain .15s steps(2) infinite;
+    }
+
+    @keyframes grain {
+        0%   { transform: translate(0, 0); }
+        25%  { transform: translate(2%, -2%); }
+        50%  { transform: translate(-2%, 2%); }
+        75%  { transform: translate(2%, 1%); }
+        100% { transform: translate(-1%, -1%); }
+    }
+
+    /* Cinematic black bars */
+    .bar {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 10vh;
+
+        background: #000;
+        z-index: 20;
+    }
+
+    .bar.top {
+        top: 0;
+    }
+
+    .bar.bottom {
+        bottom: 0;
+    }
+
+    /* Small subtitle */
+    .subtitle {
+        position: absolute;
+        z-index: 6;
+        bottom: 17%;
+        color: rgba(255,255,255,.55);
+
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+
+        opacity: 0;
+        animation: subtitleIn 1s 2.8s ease forwards;
+    }
+
+    @keyframes subtitleIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+        .name {
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            letter-spacing: 3px;
+        }
+    }
+</style>
 </head>
 
 <body>
 
-    <div id="name"></div>
+<div class="scene">
 
-    <script>
-        // Change this name
-        const text = "JAYAKUMAR";
+    <div class="light"></div>
 
-        const nameContainer = document.getElementById("name");
+    <!-- 👇 Change the name here -->
+    <div class="name" id="name"></div>
 
-        [...text].forEach((letter, index) => {
-            const span = document.createElement("span");
+    <div class="subtitle">
+        A Cinematic Introduction
+    </div>
 
-            // Preserve spaces
-            span.textContent = letter === " " ? "\u00A0" : letter;
+    <div class="grain"></div>
 
-            span.classList.add("letter");
+    <div class="bar top"></div>
+    <div class="bar bottom"></div>
 
-            // Each letter appears after the previous one
-            span.style.animationDelay = `${index * 0.15}s`;
+</div>
 
-            nameContainer.appendChild(span);
-        });
-    </script>
+<script>
+    /* ==============================
+       CHANGE YOUR NAME HERE
+    ============================== */
+
+    const NAME = "JAYAKUMAR";
+
+    const nameElement = document.getElementById("name");
+
+    /*
+       Create each letter separately
+       so they can enter one-by-one.
+    */
+
+    nameElement.innerHTML = [...NAME]
+        .map((letter, index) => {
+
+            const character =
+                letter === " "
+                    ? "&nbsp;"
+                    : letter;
+
+            return `
+                <span
+                    class="letter"
+                    style="animation-delay:${index * 0.22}s"
+                >
+                    ${character}
+                </span>
+            `;
+
+        })
+        .join("");
+</script>
 
 </body>
 </html>
