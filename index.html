@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Animation</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0b0b16;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        #name {
+            display: flex;
+            gap: 8px;
+            font-size: clamp(40px, 10vw, 100px);
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .letter {
+            opacity: 0;
+            transform: translateY(50px) scale(0.5);
+            display: inline-block;
+
+            background: linear-gradient(
+                90deg,
+                #00ffff,
+                #7b2cff,
+                #ff00cc
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            animation: appear 0.7s ease forwards;
+        }
+
+        @keyframes appear {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.5);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translateY(-10px) scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="name"></div>
+
+    <script>
+        // Change this name
+        const text = "JAYAKUMAR";
+
+        const nameContainer = document.getElementById("name");
+
+        [...text].forEach((letter, index) => {
+            const span = document.createElement("span");
+
+            // Preserve spaces
+            span.textContent = letter === " " ? "\u00A0" : letter;
+
+            span.classList.add("letter");
+
+            // Each letter appears after the previous one
+            span.style.animationDelay = `${index * 0.15}s`;
+
+            nameContainer.appendChild(span);
+        });
+    </script>
+
+</body>
+</html>
